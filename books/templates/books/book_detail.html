@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+    <h1 class="text-center">{{book.title}}</h1>
+    <div class="row" style="margin-top: 80px;">
+        <a style="float:left" href="#"><img src={{book.image.url}} width="300" class="img-responsive" /></a>
+        <h3 class="text-justify">Page Count:{{books.pageCount}}</h3>
+        <div class="text-justify">Authors:<br>
+            {% for author in authors %}
+            <a href="{% url 'books.author' author %}">{{author}}</a>
+            {% endfor %}
+        </div>
+        <h3 class="text-justify">Short Description:<br> {{book.shortDescription}}</h3>
+        <h3 class="text-justify">Long Description:<br> {{book.longDescription}}</h3>
+
+
+    </div>
+</div>
+{% if user.is_authenticated %}
+<form method="post" action="review" enctype="multipart/form-data">
+    {% csrf_token %}
+    <!-- <textarea name="body"></textarea>
+    <input type="file" name="image"> -->
+    {{form.as_p}}
+    <input type="submit">
+</form>
+{% else %}
+<p>
+<h3>
+    <a href="{% url 'login' %}?next={{request.path}}">Login</a>for write comment
+</h3>
+</p>
+{% endif %}
+
+<div>
+    {% for review in reviews %}
+    <div class="flex justify-content-between ">
+        <div>
+            <h3> {{review.user}}</h3>
+            <h3> {{review.created_at}}</h3>
+        </div>
+
+    </div>
+    <h3 class="text-justify"> {{review.body}}</h3>
+    {% if review.image %}
+    <img src="{{ review.image.url }}" />
+    {% endif %}
+    {% endfor %}
+
+</div>
+</div>
+{% endblock content %}
